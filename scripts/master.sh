@@ -10,6 +10,9 @@ main() {
     sudo systemctl daemon-reload
     sudo systemctl restart kubelet
     wait_dns_running
+
+    # enable running kubectl from worker nodes
+    sudo cp /etc/kubernetes/admin.conf /vagrant
 }
 
 init_master() {
