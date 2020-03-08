@@ -20,7 +20,7 @@ init_master() {
     rm -rf JOIN_WORKER_SCRIPT
     sudo kubeadm init \
         --apiserver-advertise-address=10.0.1.10 \
-        --pod-network-cidr=10.217.0.0/16 | tee "${HOME}"/init-output.txt
+        --pod-network-cidr=192.168.0.0/16 | tee "${HOME}"/init-output.txt
 
     grep -A 2 "kubeadm join" "${HOME}"/init-output.txt > "${JOIN_WORKER_SCRIPT}"
     cat "${JOIN_WORKER_SCRIPT}"
@@ -34,7 +34,7 @@ kubectl_nonroot_user() {
 }
 
 deploy_cni_pod_network() {
-    kubectl create -f https://raw.githubusercontent.com/cilium/cilium/v1.6/install/kubernetes/quick-install.yaml
+    kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
 }
 
 wait_dns_running() {
