@@ -1,2 +1,3 @@
 # vagrant-k8s-cluster
-Provisions a Kubernetes cluster in VirtualBox with 3 nodes using kubeadm
+
+Provision a 3 node Kubernetes cluster in VirtualBox/VMWare using Vagrant.
