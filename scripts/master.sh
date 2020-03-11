@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -x
+set -ex
 
 main() {
     init_master
@@ -9,7 +9,7 @@ main() {
 
     sudo systemctl daemon-reload
     sudo systemctl restart kubelet
-    wait_dns_running
+    wait_until_pods_ready 120 1
 
     # enable running kubectl from worker nodes
     sudo cp /etc/kubernetes/admin.conf /vagrant
@@ -37,13 +37,50 @@ deploy_cni_pod_network() {
     kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
 }
 
-wait_dns_running() {
-    for i in {1..10}
-    do
-        echo "$i"
-        kubectl get pods --all-namespaces
-        sleep 5s
-    done
+function is_pod_ready() {
+  [[ "$(kubectl get po --namespace=kube-system "$1" \
+  -o 'jsonpath={.status.conditions[?(@.type=="Ready")].status}')" == 'True' ]]
+}
+
+function pods_ready() {
+  local pod
+
+  [[ "$#" == 0 ]] && return 0
+
+  for pod in $pods; do
+    is_pod_ready "$pod" || return 1
+  done
+
+  return 0
+}
+
+function wait_until_pods_ready() {
+  local period interval i pods
+
+  if [[ $# != 2 ]]; then
+    echo "Usage: wait_until_pods_ready PERIOD INTERVAL" >&2
+    echo "" >&2
+    echo "This script waits for all pods to be ready in the current namespace." >&2
+
+    return 1
+  fi
+
+  period="$1"
+  interval="$2"
+
+  for ((i=0; i<$period; i+=$interval)); do
+    pods="$(kubectl get po --namespace=kube-system -o 'jsonpath={.items[*].metadata.name}')"
+    if pods_ready $pods; then
+      return 0
+    fi
+
+    kubectl get po --namespace=kube-system
+    sleep "$interval"
+    echo "Waiting for pods to be ready: $i seconds elapsed"
+  done
+
+  echo "Waited for $period seconds, but all pods are not ready yet."
+  return 1
 }
 
 main

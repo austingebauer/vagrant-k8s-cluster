@@ -45,24 +45,11 @@ EOF
 }
 
 install_k8s() {
-    echo "START: disable swap"
+    # disable swap
     swapoff -a
     sed -i '/swap/d' /etc/fstab
-    echo "END"
 
-    echo "START: pull images"
-    kubeadm config images pull &
-    echo "END"
-
-    echo "START: ensure iptables tooling does not use the nftables backend"
-    sudo apt-get install -y iptables arptables ebtables
-    sudo update-alternatives --set iptables /usr/sbin/iptables-legacy
-    sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
-    sudo update-alternatives --set arptables /usr/sbin/arptables-legacy
-    sudo update-alternatives --set ebtables /usr/sbin/ebtables-legacy
-    echo "END"
-
-    echo "START: install kubeadm, kubelet and kubectl"
+    # install kubeadm, kubelet and kubectl
     curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
     cat <<EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list
     deb https://apt.kubernetes.io/ kubernetes-xenial main
@@ -70,7 +57,9 @@ EOF
     sudo apt-get update
     sudo apt-get install -y kubelet kubeadm kubectl
     sudo apt-mark hold kubelet kubeadm kubectl
-    echo "END"
+
+    # pull images
+    kubeadm config images pull &
 }
 
 clean_up() {
