@@ -74,12 +74,12 @@ function wait_until_pods_ready() {
       return 0
     fi
 
-    kubectl get po --namespace=kube-system
     sleep "$interval"
     echo "Waiting for pods to be ready: $i seconds elapsed"
   done
 
   echo "Waited for $period seconds, but all pods are not ready yet."
+  kubectl get po --namespace=kube-system
   return 1
 }
 
