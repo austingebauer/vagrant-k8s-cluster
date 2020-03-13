@@ -12,7 +12,7 @@ main() {
     wait_until_pods_ready 120 1
 
     # enable running kubectl from worker nodes
-    sudo cp /etc/kubernetes/admin.conf /vagrant
+    sudo cp "$HOME"/.kube/config /vagrant
 }
 
 init_master() {

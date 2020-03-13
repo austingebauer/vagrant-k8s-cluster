@@ -6,7 +6,7 @@ main() {
     sudo /vagrant/join.sh
     sudo systemctl daemon-reload
     sudo systemctl restart kubelet
-    echo "export KUBECONFIG=/vagrant/admin.conf" >> .bashrc
+    echo "export KUBECONFIG=/vagrant/config" >> .bashrc
 }
 
 main
