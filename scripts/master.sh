@@ -10,8 +10,6 @@ main() {
     sudo systemctl daemon-reload
     sudo systemctl restart kubelet
     wait_until_pods_ready 120 1
-
-    # enable running kubectl from worker nodes
     sudo cp "$HOME"/.kube/config /vagrant
 }
 
