@@ -1,6 +1,6 @@
 # vagrant-k8s-cluster
 
-Provision a 3 node Kubernetes cluster in VirtualBox or VMWare Fusion using Vagrant.
+Provisions a 3 node Kubernetes cluster in VirtualBox or VMWare Fusion using Vagrant.
 
 ## Prerequisites
 
@@ -35,7 +35,7 @@ API server, export the following environment variable:
 export KUBECONFIG=$KUBECONFIG:<path>/<to>/vagrant-k8s-cluster/config
 ```
 
-### Master and Worker nodes
+#### Master and Worker nodes
 
 Kubectl is configured for use on both master and worker nodes after cluster turnup is
 complete. Use `vagrant ssh` to get SSH remote access to one of the nodes in the cluster.
